@@ -1,5 +1,7 @@
 # mystery_admin
 
+The project is a usable version. Although It will be some traces of beginners.   
+
 ## Project setup
 ```
 npm install
