@@ -36,7 +36,9 @@
       </el-row>
     </el-aside>
     <el-container>
-      <el-header height="56px">
+      <router-view />
+      <!-- Keep maneuverable space for page header -->
+      <!-- <el-header height="56px">
         <div style="float:right; margin-top:10px">
           <el-popover placement="bottom" popper-class="popover-width" v-model="popoverVisible">
             <div style="text-align: right; margin: 0;">
@@ -50,7 +52,7 @@
       </el-header>
       <el-main>
         <router-view />
-      </el-main>
+      </el-main> -->
     </el-container>
   </el-container>
 </template>
