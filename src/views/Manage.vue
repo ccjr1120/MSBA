@@ -37,22 +37,6 @@
     </el-aside>
     <el-container>
       <router-view />
-      <!-- Keep maneuverable space for page header -->
-      <!-- <el-header height="56px">
-        <div style="float:right; margin-top:10px">
-          <el-popover placement="bottom" popper-class="popover-width" v-model="popoverVisible">
-            <div style="text-align: right; margin: 0;">
-              <el-button size="mini" type="text" @click="popoverVisible = false">个人简介</el-button>
-              <br />
-              <el-button type="text" size="mini">注销</el-button>
-            </div>
-            <el-avatar slot="reference" :size="40"></el-avatar>
-          </el-popover>
-        </div>
-      </el-header>
-      <el-main>
-        <router-view />
-      </el-main> -->
     </el-container>
   </el-container>
 </template>

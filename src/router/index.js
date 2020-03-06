@@ -3,33 +3,39 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const Mange = ()=>import('../views/Manage')
+const Mange = () => import('../views/Manage')
+const Home = () => import('../views/Home')
 
 const routes = [
   {
     path: '/',
     name: 'Manage',
     component: Mange,
-    children:[
+    children: [
+      {
+        path: '/',
+        component: Home
+      },
       {
         // Initial interface.I will probally put some access, comment data, etc 
-        path:'/home'
+        path: '/home',
+        component: Home
       },
       {
         // Get all articles
-        path:'/articles'
+        path: '/articles'
       },
       {
         // Get articles by category name
-        path:'/articles/:name'
+        path: '/articles/:name'
       },
       {
         // Get comments.
-        path:'/comments'
+        path: '/comments'
       },
       {
         // Create New article
-        path:'/create'
+        path: '/create'
       }
     ]
   },
