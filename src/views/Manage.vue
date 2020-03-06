@@ -20,14 +20,14 @@
                 <el-submenu index="categoryList">
                   <template slot="title">分组查看</template>
                 </el-submenu>
-                <el-menu-item index="/blogs">全部文章</el-menu-item>
+                <el-menu-item index="/articles">全部文章</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-menu-item index="/comments">
               <i class="el-icon-s-comment"></i>
               <span slot="title">评论列表</span>
             </el-menu-item>
-            <el-menu-item index="/newBlog">
+            <el-menu-item index="/create">
               <i class="el-icon-edit"></i>
               <span slot="title">新建文章</span>
             </el-menu-item>
