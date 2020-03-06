@@ -9,7 +9,29 @@ const routes = [
   {
     path: '/',
     name: 'Manage',
-    component: Mange
+    component: Mange,
+    children:[
+      {
+        // Initial interface.I will probally put some access, comment data, etc 
+        path:'/home'
+      },
+      {
+        // Get all articles
+        path:'/articles'
+      },
+      {
+        // Get articles by category name
+        path:'/articles/:name'
+      },
+      {
+        // Get comments.
+        path:'/comments'
+      },
+      {
+        // Create New article
+        path:'/create'
+      }
+    ]
   },
 ]
 
