@@ -5,6 +5,7 @@ Vue.use(VueRouter)
 
 const Mange = () => import('../views/Manage')
 const Home = () => import('../views/Home')
+const Edit = () => import('../views/ArticleEdit')
 
 const routes = [
   {
@@ -35,7 +36,8 @@ const routes = [
       },
       {
         // Create New article
-        path: '/create'
+        path: '/create',
+        component: Edit
       }
     ]
   },
