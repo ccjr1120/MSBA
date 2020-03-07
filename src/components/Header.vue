@@ -1,6 +1,6 @@
 <template>
   <el-header height="56px">
-    <el-page-header v-if="pageInfo.parent != null" style="float:left; margin-top:16px" @back="goBack" title="" :content="pageInfo.name"></el-page-header>
+    <el-page-header @back="goBack" v-if="pageInfo.parent != null" style="float:left; margin-top:16px" title="" :content="pageInfo.name"></el-page-header>
     <span v-else style="font-size:18px;">{{pageInfo.name}}</span>
     <div style="float:right; margin-top:10px">
       <el-popover placement="bottom" v-model="popoverVisible">
