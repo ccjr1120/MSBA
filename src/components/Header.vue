@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     goBack() {
-      console.log("go back");
+      this.$router.push(this.pageInfo.parent)
     }
   }
 };
