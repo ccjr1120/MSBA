@@ -3,11 +3,7 @@
     <el-aside>
       <el-row>
         <el-col style="width:100%" :span="12">
-          <el-menu
-            default-active="/home"
-            class="el-menu-vertical-demo"
-            router
-          >
+          <el-menu default-active="/home" class="el-menu-vertical-demo" router>
             <el-menu-item index="/home">
               <i class="el-icon-menu"></i>
               <span slot="title">首页</span>
@@ -18,8 +14,9 @@
                 <span slot="title">文章列表</span>
               </template>
               <el-menu-item-group>
-                <el-submenu index="categoryList">
+                <el-submenu index="/categoryList">
                   <template slot="title">分组查看</template>
+                  <el-menu-item v-for="category in categoryList" :key="category" :index="'/articles/'+category">{{category}}</el-menu-item>
                 </el-submenu>
                 <el-menu-item index="/articles">全部文章</el-menu-item>
               </el-menu-item-group>
@@ -44,12 +41,13 @@
 
 <script>
 export default {
-  data(){
-    return{
-      popoverVisible:false
-    }
+  data() {
+    return {
+      popoverVisible: false,
+      categoryList:["未分类", "测试分组1", "测试分组2"]
+    };
   }
-}
+};
 </script>
 
 <style lang="less" scrope>
@@ -69,7 +67,7 @@ export default {
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   min-height: 1024px;
 }
-.popover-width{
+.popover-width {
   widows: 100px;
 }
 body > .el-container {
