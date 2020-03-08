@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 const Mange = () => import('../views/Manage')
 const Home = () => import('../views/Home')
 const Edit = () => import('../views/ArticleEdit')
+const Comment = ()=>import('../views/Comment')
 
 const routes = [
   {
@@ -32,7 +33,8 @@ const routes = [
       },
       {
         // Get comments.
-        path: '/comments'
+        path: '/comments',
+        component: Comment
       },
       {
         // Create New article
