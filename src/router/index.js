@@ -6,7 +6,11 @@ Vue.use(VueRouter)
 const Mange = () => import('../views/Manage')
 const Home = () => import('../views/Home')
 const Edit = () => import('../views/ArticleEdit')
+<<<<<<< HEAD
 const Comment = ()=>import('../views/Comment')
+=======
+const Articles = () => import('../views/Articles')
+>>>>>>> de6189daf196c8b5ed3f1b93a4bd38eb21e6093d
 
 const routes = [
   {
@@ -25,11 +29,13 @@ const routes = [
       },
       {
         // Get all articles
-        path: '/articles'
+        path: '/articles',
+        component: Articles
       },
       {
         // Get articles by category name
-        path: '/articles/:name'
+        path: '/articles/:name',
+        component: Articles
       },
       {
         // Get comments.
