@@ -1,6 +1,6 @@
 <template>
   <div class="fillcontain">
-    <Header v-bind:pageInfo="pageInfo"></Header>
+    <Header v-bind:pageInfo="getPageName(this.$route.path)"></Header>
     <el-main>
       <el-table :data="blogList" border style="width: 100%">
         <el-table-column prop="bid" label="博客ID" width="180"></el-table-column>
@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       pageInfo: {
-        name: "文章列表",
+        name: "文章列表·all",
         parent: "/home"
       },
       blogList: [
@@ -35,14 +35,23 @@ export default {
       ]
     };
   },
-  created() {
-  },
-    watch: {
-    $route(to, from) {
-      window.console.log(from);
-    }
-  },
+  created() {},
   methods: {
+    getPageName: path => {
+      //path's examples:"/articles", "/articles/category"...
+      var pageInfo = {
+          parent:"/home",
+          name:""
+      }
+      var pageName = "文章列表·";
+      if (path === "/articles") {
+        pageName += "all";
+      } else {
+        pageName += path.substring(10);
+      }
+      pageInfo.name = pageName;
+      return pageInfo
+    }
   }
 };
 </script>
