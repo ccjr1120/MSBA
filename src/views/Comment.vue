@@ -18,9 +18,23 @@
             >查看对话</el-button>
             <el-button v-else size="mini" type="primary">回复</el-button>
             <el-button size="mini" type="danger">删除</el-button>
-            <el-dialog title="查看对话" :visible.sync="dialogVisible" width="30%">
+            <el-dialog
+              :center="true"
+              :title="scope.row.blogTitle"
+              :visible.sync="dialogVisible"
+              width="30%"
+            >
               <ChildComment v-bind:comment="scope.row"></ChildComment>
-              <span slot="footer" class="dialog-footer"></span>
+              <span v-if="answerWho !== ''" slot="footer" class="dialog-footer">
+                <el-input
+                  style="width:90%;"
+                  type="textarea"
+                  :rows="2"
+                  placeholder="回复"
+                  v-model="answerContent"
+                ></el-input>
+                <el-button size="small" type="success" icon="el-icon-check" circle></el-button>
+              </span>
             </el-dialog>
           </template>
         </el-table-column>
@@ -30,7 +44,7 @@
 </template>
 <script>
 import ChildComment from "../components/ChildComment";
-
+import bus from "../utils/bus";
 export default {
   data() {
     return {
@@ -39,6 +53,8 @@ export default {
         name: "评论列表",
         parent: "/home"
       },
+      answerContent: "",
+      answerWho: "",
       tableData: [
         {
           cid: 1,
@@ -66,11 +82,50 @@ export default {
                   children: []
                 }
               ]
+            },
+            {
+              cid: 1,
+              nickname: "nichname",
+              email: "1110@qq.com",
+              createDate: "2016-05-02",
+              blogTitle: "blog title example1",
+              content: "评论的评论",
+              children: [
+                {
+                  cid: 1,
+                  nickname: "nichname",
+                  email: "1110@qq.com",
+                  createDate: "2016-05-02",
+                  blogTitle: "blog title example1",
+                  content: "评论的评论的评论",
+                  children: []
+                }
+              ]
             }
           ]
         }
       ]
     };
+  },
+  watch: {
+    //watch the answerContent value to judge the comment input box needs to be displayed
+    answerContent() {
+      var l = this.answerWho.length;
+      //answerContent.length < (@+answerwho+:).length or the first values of content are not equal to answerwho
+      if (
+        this.answerContent.length < l + 2 ||
+        this.answerContent.substr(1, l) !== this.answerWho
+      ) {
+        this.answerWho = "";
+      }
+    }
+  },
+  mounted() {
+    bus.$on("sendParent", comment => {
+      this.answerWho = comment.nickname;
+      this.answerContent = "@" + this.answerWho + ":";
+      console.log(comment);
+    });
   },
   methods: {},
   components: {
