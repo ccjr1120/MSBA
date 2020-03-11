@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       pageInfo: {
-        name: "新建博客",
+        name: "博客编辑",
         parent: "/home"
       },
       dialogVisible: true,
@@ -64,6 +64,12 @@ export default {
         description: ""
       }
     };
+  },
+  created() {
+    if (this.$route.params.article != null) {
+      this.article = this.$route.params.article;
+      console.log(this.article)
+    }
   },
   methods: {
     checkForm(formName) {

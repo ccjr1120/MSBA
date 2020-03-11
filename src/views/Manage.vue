@@ -25,7 +25,7 @@
               <i class="el-icon-s-comment"></i>
               <span slot="title">评论列表</span>
             </el-menu-item>
-            <el-menu-item index="/create">
+            <el-menu-item index="/edit">
               <i class="el-icon-edit"></i>
               <span slot="title">新建文章</span>
             </el-menu-item>

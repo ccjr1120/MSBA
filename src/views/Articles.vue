@@ -53,7 +53,12 @@ export default {
       return pageInfo;
     },
     handleEdit(index, row) {
-      console.log(index, row);
+      this.$router.push({
+        name: "Edit",
+        params: {
+          article: row
+        }
+      });
     },
     handleDelete(index) {
       this.$confirm("此操作将会删除该博客, 是否继续?", "提示", {

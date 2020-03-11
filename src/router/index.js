@@ -41,7 +41,8 @@ const routes = [
       },
       {
         // Create New article
-        path: '/create',
+        path: '/edit',
+        name:'Edit',
         component: Edit
       }
     ]
