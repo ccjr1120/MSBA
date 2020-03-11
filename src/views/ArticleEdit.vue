@@ -2,7 +2,7 @@
   <div class="fillcontain">
     <Header v-bind:pageInfo="pageInfo"></Header>
     <el-main style="height:90%;overflow:visible;">
-      <el-dialog title="文章基础信息" :visible.sync="dialogVisible">
+      <el-dialog :before-close="closeForm" title="文章基础信息" :visible.sync="dialogVisible">
         <el-form :model="article" ref="articleForm" :rules="rules">
           <el-form-item label="分类" prop="category" label-width="120px">
             <el-select
@@ -35,7 +35,7 @@
         </div>
       </el-dialog>
       <div id="editor">
-        <mavon-editor style="height: 100%"></mavon-editor>
+        <mavon-editor v-model="content" style="height: 100%"></mavon-editor>
       </div>
     </el-main>
   </div>
@@ -60,15 +60,22 @@ export default {
       article: {
         title: "",
         category: "",
-        content: "",
         description: ""
-      }
+      },
+      //content of the article, As a spearate attribute for watch
+      content: ""
     };
+  },
+  watch: {
+    //For cache function
+    content() {
+      console.log(this.content);
+    }
   },
   created() {
     if (this.$route.params.article != null) {
       this.article = this.$route.params.article;
-      console.log(this.article)
+      console.log(this.article);
     }
   },
   methods: {
@@ -81,6 +88,14 @@ export default {
           return false;
         }
       });
+    },
+    closeForm(done) {
+      this.$confirm("你所有输入的信息都不会被保存，确认关闭？")
+        .then(() => {
+          done();
+          this.$router.push(this.pageInfo.parent);
+        })
+        .catch(() => {});
     }
   },
   components: {
