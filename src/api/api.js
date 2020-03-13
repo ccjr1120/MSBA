@@ -20,3 +20,7 @@ export const getArticleList = () => {
 export const getCommentList= ()=>{
     return axios.get('/comments')
 }
+
+export const deleteComment=(cid)=>{
+    return axios.delete('/comment/' + cid)
+}

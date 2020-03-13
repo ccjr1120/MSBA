@@ -17,7 +17,12 @@
               @click="showDialogView(scope.row)"
             >查看对话</el-button>
             <el-button v-else size="mini" type="primary">回复</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+            <el-button
+              v-if="scope.row.content!=='该评论已被删除!'"
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,7 +51,7 @@
 <script>
 import ChildComment from "../components/ChildComment";
 import bus from "../utils/bus";
-import { getCommentList } from "../api/api.js";
+import { getCommentList, deleteComment } from "../api/api.js";
 export default {
   data() {
     return {
@@ -94,17 +99,21 @@ export default {
       this.answerWho = "";
       this.dialogVisible = false;
     },
-    handleDelete(index) {
+    handleDelete(index, row) {
       this.$confirm("此操作将会删除该评论, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.commentList.splice(index, 1);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          deleteComment(row.cid).then(resp => {
+            if (resp.data.success) {
+              this.commentList.splice(index, 1);
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            }
           });
         })
         .catch(() => {
