@@ -24,3 +24,7 @@ export const getCommentList= ()=>{
 export const deleteComment=(cid)=>{
     return axios.delete('/comment/' + cid)
 }
+
+export const answerComment=(cid, params)=>{
+    return axios.post('/comment/' + cid, params)
+}

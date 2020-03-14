@@ -16,7 +16,7 @@
               type="primary"
               @click="showDialogView(scope.row)"
             >查看对话</el-button>
-            <el-button v-else size="mini" type="primary">回复</el-button>
+            <el-button v-else size="mini" @click="showReplyDialog(scope.row)" type="primary">回复</el-button>
             <el-button
               v-if="scope.row.content!=='该评论已被删除!'"
               size="mini"
@@ -27,14 +27,13 @@
         </el-table-column>
       </el-table>
       <el-dialog
-        :center="true"
+        :before-close="closeDialogView"
         :title="dialogData.title"
         :visible.sync="dialogVisible"
-        :before-close="closeDialogView"
         width="30%"
       >
         <ChildComment v-bind:comment="dialogData"></ChildComment>
-        <span v-if="answerWho !== ''" slot="footer" class="dialog-footer">
+        <span v-if="answerer.name !== ''" slot="footer" class="dialog-footer">
           <el-input
             style="width:90%;"
             type="textarea"
@@ -42,8 +41,25 @@
             placeholder="回复"
             v-model="answerContent"
           ></el-input>
-          <el-button size="small" type="success" icon="el-icon-check" circle></el-button>
+          <el-button @click="commitAnswer" size="small" type="success" icon="el-icon-check" circle></el-button>
         </span>
+      </el-dialog>
+      <el-dialog
+        title="提示"
+        :before-close="closeDialogView"
+        :visible.sync="replyDialogVisible"
+        width="30%"
+        center
+      >
+        <el-input
+          style="width:90%;"
+          type="textarea"
+          :autosize="{ minRows: 4}"
+          :rows="2"
+          placeholder="回复"
+          v-model="answerContent"
+        ></el-input>
+        <el-button @click="commitAnswer" size="small" type="success" icon="el-icon-check" circle></el-button>
       </el-dialog>
     </el-main>
   </div>
@@ -51,7 +67,7 @@
 <script>
 import ChildComment from "../components/ChildComment";
 import bus from "../utils/bus";
-import { getCommentList, deleteComment } from "../api/api.js";
+import { getCommentList, deleteComment, answerComment } from "../api/api.js";
 export default {
   data() {
     return {
@@ -61,28 +77,33 @@ export default {
       },
       dialogVisible: false,
       dialogData: {},
+      replyDialogVisible: false,
+      answerer: {
+        id: "",
+        name: ""
+      },
       answerContent: "",
-      answerWho: "",
       commentList: []
     };
   },
   watch: {
     //watch the answerContent value to judge the comment input box needs to be displayed
     answerContent() {
-      var l = this.answerWho.length;
-      //answerContent.length < (@+answerwho+:).length or the first values of content are not equal to answerwho
+      var l = this.answerer.name.length;
+      //answerContent.length < (@+answerer.name+:).length or the first values of content are not equal to answerer.name
       if (
         this.answerContent.length < l + 2 ||
-        this.answerContent.substr(1, l) !== this.answerWho
+        this.answerContent.substr(1, l) !== this.answerer.name
       ) {
-        this.answerWho = "";
+        this.answerer.name = "";
       }
     }
   },
   mounted() {
     bus.$on("sendParent", comment => {
-      this.answerWho = comment.nickname;
-      this.answerContent = "@" + this.answerWho + ":";
+      this.answerer.id = comment.cid;
+      this.answerer.name = comment.nickname;
+      this.answerContent = "@" + this.answerer.name + ":";
     });
     getCommentList().then(resp => {
       if (resp.data.success) {
@@ -95,9 +116,48 @@ export default {
       this.dialogData = row;
       this.dialogVisible = true;
     },
+    showReplyDialog(row) {
+      this.replyDialogVisible = true;
+      this.answerer.id = row.cid;
+      this.answerer.name = row.nickname;
+      this.answerContent = "@" + row.nickname + ":";
+    },
+    commitAnswer() {
+      var cid = this.answerer.id;
+      var answerContent = this.answerContent.substr(
+        this.answerer.name.length + 2
+      );
+      answerComment(cid, {
+        answerContent: answerContent
+      }).then(resp => {
+        if (resp.data.success) {
+          this.$message({
+            type: "success",
+            message: "回复成功!"
+          });
+          this.answerer.id = "";
+          this.answerer.name = "";
+          this.answerContent = "";
+          this.dialogVisible = false;
+          this.replyDialogVisible = false;
+          getCommentList().then(resp => {
+            if (resp.data.success) {
+              this.commentList = resp.data.data;
+            }
+          });
+        } else {
+          this.$message({
+            type: "fail",
+            message: "回复失败!"
+          });
+        }
+      });
+    },
     closeDialogView() {
-      this.answerWho = "";
+      this.answerer.name = "";
+      this.answerContent = "";
       this.dialogVisible = false;
+      this.replyDialogVisible = false;
     },
     handleDelete(index, row) {
       this.$confirm("此操作将会删除该评论, 是否继续?", "提示", {
@@ -108,7 +168,7 @@ export default {
         .then(() => {
           deleteComment(row.cid).then(resp => {
             if (resp.data.success) {
-              row.content = "该评论已被删除!"
+              row.content = "该评论已被删除!";
               this.$message({
                 type: "success",
                 message: "删除成功!"
