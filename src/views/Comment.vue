@@ -108,7 +108,7 @@ export default {
         .then(() => {
           deleteComment(row.cid).then(resp => {
             if (resp.data.success) {
-              this.commentList.splice(index, 1);
+              row.content = "该评论已被删除!"
               this.$message({
                 type: "success",
                 message: "删除成功!"
