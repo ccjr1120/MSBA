@@ -18,6 +18,7 @@
   </div>
 </template>
 <script>
+import { getArticleList, getArticleListByCategory } from "../api/api";
 export default {
   data() {
     return {
@@ -25,19 +26,20 @@ export default {
         name: "文章列表·all",
         parent: "/home"
       },
-      articleList: [
-        {
-          bid: "1",
-          category: "未分类",
-          createDate: "2016-05-02",
-          title: "why the sun alwas here?"
-        }
-      ]
+      articleList: []
     };
   },
-  created() {},
+  created(){
+    this.dynamicGetArticleList(this.$route.path);
+  },
+  watch:{
+    $route(to, from){
+      console.log(from)
+    this.dynamicGetArticleList(this.$route.path);
+    }
+  },
   methods: {
-    getPageName: path => {
+    getPageName(path) {
       //path's examples:"/articles", "/articles/category"...
       var pageInfo = {
         parent: "/home",
@@ -47,10 +49,37 @@ export default {
       if (path === "/articles") {
         pageName += "all";
       } else {
-        pageName += path.substring(10);
+        var category = path.substring(10);
+        pageName += category;
       }
       pageInfo.name = pageName;
       return pageInfo;
+    },
+    dynamicGetArticleList(path) {
+      if (path === "/articles") {
+        getArticleList().then(resp => {
+          if (resp.data.success) {
+            this.articleList = resp.data.data;
+          } else {
+            this.$message({
+              type: "fail",
+              message: "获取博客列表失败!reason:" + resp.data.errMsg
+            });
+          }
+        });
+      } else {
+        var category = path.substring(10);
+        getArticleListByCategory(category).then(resp => {
+          if (resp.data.success) {
+            this.articleList = resp.data.data;
+          } else {
+            this.$message({
+              type: "fail",
+              message: "获取博客列表失败!reason:" + resp.data.errMsg
+            });
+          }
+        });
+      }
     },
     handleEdit(index, row) {
       this.$router.push({

@@ -1,6 +1,12 @@
 <template>
   <el-header height="56px">
-    <el-page-header @back="goBack" v-if="pageInfo.parent != null" style="float:left; margin-top:16px" title="" :content="pageInfo.name"></el-page-header>
+    <el-page-header
+      @back="goBack"
+      v-if="pageInfo.parent != null"
+      style="float:left; margin-top:16px"
+      title
+      :content="pageInfo.name"
+    ></el-page-header>
     <span v-else style="font-size:18px;">{{pageInfo.name}}</span>
     <div style="float:right; margin-top:10px">
       <el-popover placement="bottom" v-model="popoverVisible">
@@ -16,15 +22,21 @@
 </template>
 <script>
 export default {
-  props:['pageInfo'],
+  props: ["pageInfo"],
   data() {
     return {
-      popoverVisible: false,
+      popoverVisible: false
+    };
+  },
+  watch: {
+    $route(to, from) {
+      console.log("header");
+      console.log(from);
     }
   },
   methods: {
     goBack() {
-      this.$router.push(this.pageInfo.parent)
+      this.$router.push(this.pageInfo.parent);
     }
   }
 };
