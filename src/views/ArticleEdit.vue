@@ -35,7 +35,7 @@
         </div>
       </el-dialog>
       <div id="editor">
-        <mavon-editor v-model="content" style="height: 100%"></mavon-editor>
+        <mavon-editor @save="save" v-model="content" style="height: 100%"></mavon-editor>
       </div>
     </el-main>
   </div>
@@ -44,6 +44,7 @@
 <script>
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
+import { createNewArticle, getCategoryList } from "../api/api";
 export default {
   data() {
     return {
@@ -52,7 +53,7 @@ export default {
         parent: "/home"
       },
       dialogVisible: true,
-      categoryList: ["未命名", "测试分组"],
+      categoryList: [],
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         category: [{ required: true, message: "请选择分类", trigger: "blur" }]
@@ -77,6 +78,16 @@ export default {
       this.article = this.$route.params.article;
       console.log(this.article);
     }
+    getCategoryList().then(resp => {
+      if (resp.data.success) {
+        this.categoryList = resp.data.data;
+      } else {
+        this.$message({
+          type: "fail",
+          message: "保存失败!reason:" + resp.data.errMsg
+        });
+      }
+    });
   },
   methods: {
     checkForm(formName) {
@@ -90,12 +101,44 @@ export default {
       });
     },
     closeForm(done) {
-      this.$confirm("你所有输入的信息都不会被保存，确认关闭？")
-        .then(() => {
-          done();
-          this.$router.push(this.pageInfo.parent);
-        })
-        .catch(() => {});
+      if (this.article.title !== "" && this.article.category !== "") {
+        this.$confirm("你所有输入的信息都不会被保存，确认关闭？")
+          .then(() => {
+            done();
+            this.$router.push(this.pageInfo.parent);
+          })
+          .catch(() => {});
+      } else {
+        done();
+        this.$router.push(this.pageInfo.parent);
+      }
+    },
+    save() {
+      var params = {
+        category: this.article.category,
+        title: this.article.title,
+        content: this.content,
+        description: this.article.description
+      };
+      createNewArticle(params).then(resp => {
+        if (resp.data.success) {
+          this.$message({
+            type: "success",
+            message: "保存成功!"
+          });
+          this.content = "";
+          this.article.title = "";
+          this.article.category = "";
+          this.article.description = "";
+        } else {
+          this.$message({
+            type: "fail",
+            message: "保存失败!reason:" + resp.data.errMsg
+          });
+        }
+      });
+      this.dialogVisible = true;
+      console.log("save");
     }
   },
   components: {

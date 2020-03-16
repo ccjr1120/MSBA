@@ -28,3 +28,11 @@ export const deleteComment=(cid)=>{
 export const answerComment=(cid, params)=>{
     return axios.post('/comment/' + cid, params)
 }
+
+export const createNewArticle = (params)=>{
+    return axios.post('/blog', params)
+}
+
+export const getCategoryList = ()=>{
+    return axios.get('/categoryList')
+}
