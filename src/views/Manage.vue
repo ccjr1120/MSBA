@@ -16,7 +16,11 @@
               <el-menu-item-group>
                 <el-submenu index="/categoryList">
                   <template slot="title">分组查看</template>
-                  <el-menu-item v-for="category in categoryList" :key="category" :index="'/articles/'+category">{{category}}</el-menu-item>
+                  <el-menu-item
+                    v-for="category in categoryList"
+                    :key="category"
+                    :index="'/articles/'+category"
+                  >{{category}}</el-menu-item>
                 </el-submenu>
                 <el-menu-item index="/articles">全部文章</el-menu-item>
               </el-menu-item-group>
@@ -40,12 +44,25 @@
 </template>
 
 <script>
+import { getCategoryList } from "../api/api";
 export default {
   data() {
     return {
       popoverVisible: false,
-      categoryList:["未分类", "测试分组1", "测试分组2"]
+      categoryList: ["未分类", "测试分组1", "测试分组2"]
     };
+  },
+  mounted() {
+    getCategoryList().then(resp => {
+      if (resp.data.success) {
+        this.categoryList = resp.data.data;
+      } else {
+        this.$message({
+          type: "fail",
+          message: "获取分组列表失败!reason:" + resp.data.errMsg
+        });
+      }
+    });
   }
 };
 </script>
