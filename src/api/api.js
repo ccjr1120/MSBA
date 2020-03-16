@@ -36,3 +36,12 @@ export const createNewArticle = (params)=>{
 export const getCategoryList = ()=>{
     return axios.get('/categoryList')
 }
+
+//get blog list by category or get all blog list
+export const getBlogList = (params)=>{
+    if(params===''){
+        return axios.get('/blogList')
+    }else{
+        return axios.get('/blogList/' + params)
+    }
+}
