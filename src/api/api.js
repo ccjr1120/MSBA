@@ -37,6 +37,14 @@ export const createNewArticle = (params)=>{
     return axios.post('/blog', params)
 }
 
+export const editCurrArticle = (bid, params)=>{
+    return axios.put('/blog/' + bid, params)
+} 
+
+export const deleteBlog = (bid)=>{
+    return axios.delete('/blog/' + bid)
+}
+
 export const getCategoryList = ()=>{
     return axios.get('/categoryList')
 }

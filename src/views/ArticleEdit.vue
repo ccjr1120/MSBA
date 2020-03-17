@@ -44,7 +44,7 @@
 <script>
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
-import { createNewArticle, getCategoryList } from "../api/api";
+import { createNewArticle, getCategoryList, editCurrArticle } from "../api/api";
 export default {
   data() {
     return {
@@ -54,6 +54,7 @@ export default {
       },
       dialogVisible: true,
       categoryList: [],
+      createOrEdit: 0,
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         category: [{ required: true, message: "请选择分类", trigger: "blur" }]
@@ -76,7 +77,8 @@ export default {
   created() {
     if (this.$route.params.article != null) {
       this.article = this.$route.params.article;
-      console.log(this.article);
+      this.content = this.article.content;
+      this.createOrEdit = 1;
     }
     getCategoryList().then(resp => {
       if (resp.data.success) {
@@ -120,23 +122,44 @@ export default {
         content: this.content,
         description: this.article.description
       };
-      createNewArticle(params).then(resp => {
-        if (resp.data.success) {
-          this.$message({
-            type: "success",
-            message: "保存成功!"
-          });
-          this.content = "";
-          this.article.title = "";
-          this.article.category = "";
-          this.article.description = "";
-        } else {
-          this.$message({
-            type: "fail",
-            message: "保存失败!reason:" + resp.data.errMsg
-          });
-        }
-      });
+      if (this.createOrEdit == 0) {
+        createNewArticle(params).then(resp => {
+          if (resp.data.success) {
+            this.$message({
+              type: "success",
+              message: "保存成功!"
+            });
+            this.content = "";
+            this.article.title = "";
+            this.article.category = "";
+            this.article.description = "";
+          } else {
+            this.$message({
+              type: "fail",
+              message: "保存失败!reason:" + resp.data.errMsg
+            });
+          }
+        });
+      } else {
+        editCurrArticle(this.article.bid, params).then(resp => {
+          if (resp.data.success) {
+            this.$message({
+              type: "success",
+              message: "保存成功!"
+            });
+            this.content = "";
+            this.article.title = "";
+            this.article.category = "";
+            this.article.description = "";
+            this.createOrEdit = 0
+          } else {
+            this.$message({
+              type: "fail",
+              message: "保存失败!reason:" + resp.data.errMsg
+            });
+          }
+        });
+      }
       this.dialogVisible = true;
       console.log("save");
     }

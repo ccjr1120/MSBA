@@ -3,7 +3,7 @@
     <el-aside>
       <el-row>
         <el-col style="width:100%" :span="12">
-          <el-menu default-active="/home" class="el-menu-vertical-demo" router>
+          <el-menu default-active="/home" @open="open" class="el-menu-vertical-demo" router>
             <el-menu-item index="/home">
               <i class="el-icon-menu"></i>
               <span slot="title">首页</span>
@@ -14,7 +14,7 @@
                 <span slot="title">文章列表</span>
               </template>
               <el-menu-item-group>
-                <el-submenu index="/categoryList">
+                <el-submenu index="categoryList">
                   <template slot="title">分组查看</template>
                   <el-menu-item
                     v-for="category in categoryList"
@@ -49,20 +49,25 @@ export default {
   data() {
     return {
       popoverVisible: false,
-      categoryList: ["未分类", "测试分组1", "测试分组2"]
+      categoryList: []
     };
   },
-  mounted() {
-    getCategoryList().then(resp => {
-      if (resp.data.success) {
-        this.categoryList = resp.data.data;
-      } else {
-        this.$message({
-          type: "fail",
-          message: "获取分组列表失败!reason:" + resp.data.errMsg
+  methods: {
+    open(key) {
+      console.log("213");
+      if (key === "categoryList") {
+        getCategoryList().then(resp => {
+          if (resp.data.success) {
+            this.categoryList = resp.data.data;
+          } else {
+            this.$message({
+              type: "fail",
+              message: "获取分组列表失败!reason:" + resp.data.errMsg
+            });
+          }
         });
       }
-    });
+    }
   }
 };
 </script>

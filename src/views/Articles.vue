@@ -10,7 +10,7 @@
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -18,7 +18,11 @@
   </div>
 </template>
 <script>
-import { getArticleList, getArticleListByCategory } from "../api/api";
+import {
+  getArticleList,
+  getArticleListByCategory,
+  deleteBlog
+} from "../api/api";
 export default {
   data() {
     return {
@@ -29,13 +33,13 @@ export default {
       articleList: []
     };
   },
-  created(){
+  created() {
     this.dynamicGetArticleList(this.$route.path);
   },
-  watch:{
-    $route(to, from){
-      console.log(from)
-    this.dynamicGetArticleList(this.$route.path);
+  watch: {
+    $route(to, from) {
+      console.log(from);
+      this.dynamicGetArticleList(this.$route.path);
     }
   },
   methods: {
@@ -89,17 +93,26 @@ export default {
         }
       });
     },
-    handleDelete(index) {
+    handleDelete(index, row) {
       this.$confirm("此操作将会删除该博客, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.articleList.splice(index, 1);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          deleteBlog(row.bid).then(resp => {
+            if (resp.data.success) {
+              this.articleList.splice(index, 1);
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            } else {
+              this.$message({
+                type: "fail",
+                message: "删除失败! reason:" + resp.data.errMsg
+              });
+            }
           });
         })
         .catch(() => {
