@@ -79,7 +79,10 @@ export default {
           } else {
             this.$message({
               type: "fail",
-              message: "获取博客列表失败!reason:" + resp.data.errMsg
+              message:
+                "获取博客列表失败!reason:" +
+                resp.data.errMsg +
+                " 请尝试重新拉取分组列表"
             });
           }
         });

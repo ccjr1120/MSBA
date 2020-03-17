@@ -129,10 +129,7 @@ export default {
               type: "success",
               message: "保存成功!"
             });
-            this.content = "";
-            this.article.title = "";
-            this.article.category = "";
-            this.article.description = "";
+            this.$router.push("/articles");
           } else {
             this.$message({
               type: "fail",
@@ -147,11 +144,7 @@ export default {
               type: "success",
               message: "保存成功!"
             });
-            this.content = "";
-            this.article.title = "";
-            this.article.category = "";
-            this.article.description = "";
-            this.createOrEdit = 0
+            this.$router.push("/articles");
           } else {
             this.$message({
               type: "fail",
